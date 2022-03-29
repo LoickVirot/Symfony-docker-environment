@@ -1,3 +1,5 @@
 /www/*
 /.data
 /server-logs
+
+.env

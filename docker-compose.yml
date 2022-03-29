@@ -4,23 +4,21 @@ services:
     db:
         image: mysql
         ports:
-            - 3317:3306
+            - ${MYSQL_PORT}:3306
         volumes:
             - "./.data/db:/var/lib/mysql"
         environment:
             MYSQL_ROOT_PASSWORD: root
     symfony:
         build: php-fpm
-        ports:
-            - 9000:9000
         links:
-            - db:mysqldb
+            - db
         volumes:
             - ./www:/var/www/symfony
     nginx:
         build: nginx
         ports:
-            - 8000:80
+            - ${APP_PORT}:80
         links:
             - symfony:php
         volumes:
