@@ -1,5 +1,5 @@
 # php7-fpm/Dockerfile
-FROM php:7-fpm
+FROM php:8-fpm
 COPY php.ini /usr/local/etc/php/
 
 RUN apt-get update && apt-get install -y \
