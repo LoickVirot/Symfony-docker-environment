@@ -21,10 +21,10 @@ docker-compose up -d
 ### Create new symfony project
 In the php container, run composer command to create symfony project. You can have more information about [Symfony installation in this page.](https://symfony.com/doc/current/setup.html)
 ```bash
-docker-compose exec symfony composer create-project symfony/website-skeleton .
+docker-compose exec symfony composer create-project symfony/skeleton .
 ```
 
-This will create a `website-skeleton` folder with your symfony project inside. Move **all** content from `website-skeleton` folder project to `www` folder.
+> If there is a `website-skeleton` folder in your `www`directory, move **all** content from `website-skeleton` folder project to `www` folder.
 
 If everything is well setted up, you can see the symfony homepage in your browser : [http://localhost/](http://localhost)
 
