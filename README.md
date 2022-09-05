@@ -1,6 +1,6 @@
 # Symfony docker-compose template
 Template to host Symfony applications on docker with PHP and MySQL
-- Last Symfony version tested: 6.0
+- Last Symfony version tested: 6.1.4
  
 ## Installation
 ### Environment installation
