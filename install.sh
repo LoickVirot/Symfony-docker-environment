@@ -107,7 +107,7 @@ check_symfony_dependencies() {
   cd "$HERE"
 
   echo "=== Check Symfony dependencies"
-  docker-compose exec symfony symfony check:requirements
+  docker-compose exec -T symfony symfony check:requirements
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -121,7 +121,7 @@ install_symfony() {
   rm www/.gitkeep
 
   echo "=== Create new Symfony project"
-  docker-compose exec symfony composer create-project symfony/skeleton .
+  docker-compose exec -T symfony composer create-project symfony/skeleton .
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
