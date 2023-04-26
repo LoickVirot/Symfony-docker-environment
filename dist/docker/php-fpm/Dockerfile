@@ -16,12 +16,11 @@ RUN composer --version
 
 # Install Symfony CLI
 RUN wget https://get.symfony.com/cli/installer -O - | bash
-RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
 # Set timezone
 RUN rm /etc/localtime
 RUN ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
-RUN "date"
 
 # Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure intl

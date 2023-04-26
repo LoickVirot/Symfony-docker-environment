@@ -1,41 +1,28 @@
 # Symfony docker-compose template
 Template to host Symfony applications on docker with PHP and MySQL
-- Last Symfony version tested: 6.1.4
+- Last Symfony version tested: 6.2.9
  
+## Requirements
+To use this template, you need to have these programs installed :
+- Docker
+- Docker Compose
+
 ## Installation
-### Environment installation
-Clone repository.
+First of all, create folder for your project and go inside it :
 ```bash
-git clone git@github.com:LoickVirot/Symfony-docker-environment.git <project_name>
+mkdir myproject
+cd myproject
+```
+Now, run this command to download the install script and launch it :
+```bash
+ wget https://raw.githubusercontent.com/LoickVirot/symfony-docker-environment/feature/install-script/install.sh && bash install.sh
 ```
 
-Create environment file. You can edit the `.env` file to adapt it to your system.  
+## Development
+If you want to create some changes in the dist, or the install script, just clone this repository.
+You can launch the install script wit h `-l` option to define a dist directory to copy. It's useful when you want to try the install script with your local `dist` folder
+
+For example, in this repository, you can test changes in dist repository with this command:
 ```bash
-cp .env.example .env
+./install.sh -l ../dist
 ```
-
-Now, you can run docker containers.
-```bash
-docker-compose up -d
-```
-### Create new symfony project
-In the php container, run composer command to create symfony project. You can have more information about [Symfony installation in this page.](https://symfony.com/doc/current/setup.html)
-```bash
-docker-compose exec symfony composer create-project symfony/skeleton .
-```
-
-> If there is a `website-skeleton` folder in your `www`directory, move **all** content from `website-skeleton` folder project to `www` folder.
-
-If everything is well setted up, you can see the symfony homepage in your browser : [http://localhost/](http://localhost)
-
-When all project is setted up, change host's permissions to be able to change code.
-```bash
-sudo chown -R $(id -un):$(id -gn) www
-```
-
-## Configuration
-Here is the .env parameters you can customize :
-Variable name|Default|Description 
----|---|---
-APP_PORT|80|Port to access to the symfony project.
-MYSQL_PORT|3306|Port to access to the database.
