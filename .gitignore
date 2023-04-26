@@ -1,6 +1,2 @@
-/.idea
-/www/*
-/.data
-/server-logs
-
-.env
+.idea
+test_script
