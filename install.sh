@@ -25,14 +25,29 @@ init_opts_variables() {
 }
 
 cleanup() {
-  echo "=== Cleanup"
-  echo "Remove $TMP_PATH"
-  rm -Rf "$TMP_PATH"
+  exitCode=$?
 
   cd "$HERE"
+  if [ $exitCode != "0" ]; then
+    echo "Stopping..."
+
+    if [ -d "$TMP_PATH" ]; then
+      echo "=== Cleanup"
+      echo "Remove $TMP_PATH"
+      rm -Rf "$TMP_PATH"
+    fi
+
+    docker_compose_ids=$(docker-compose ps -q)
+    if [[ $? == 0 ]]; then
+      if [[ $docker_compose_ids ]]; then
+        stop_docker_containers
+      fi
+    fi
+  fi
 }
 
 stop_docker_containers() {
+  echo "Stop launched containers"
   docker-compose down
 }
 
@@ -113,6 +128,20 @@ install_symfony() {
   fi
 }
 
+set_permission() {
+  echo "=== Add permission to www directory"
+  cd "$HERE"
+  sudo chown -R "$USER": www
+}
+
+end_message() {
+  echo "Symfony has been installed successfully!"
+  echo "You can see all docker containers created with the command : "
+  echo "    docker-compose ps"
+  echo "All Symfony files are located in www folder."
+  echo "Your website is accessible in http://localhost:8000/"
+}
+
 trap cleanup EXIT
 
 init_opts_variables "$@"
@@ -121,5 +150,7 @@ install_dotenv
 start_docker
 check_symfony_dependencies
 install_symfony
+set_permission
+end_message
 
 exit 0

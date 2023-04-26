@@ -10,13 +10,13 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: root
     symfony:
-        build: php-fpm
+        build: docker/php-fpm
         links:
             - db
         volumes:
             - ./www:/var/www/symfony
     nginx:
-        build: nginx
+        build: docker/nginx
         ports:
             - ${APP_PORT}:80
         links:
