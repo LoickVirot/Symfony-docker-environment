@@ -24,6 +24,15 @@ init_opts_variables() {
   done
 }
 
+remove_install_script() {
+  cd "$HERE"
+
+  if [ -f "install.sh" ]; then
+    echo "=== Delete install file"
+    rm install.sh
+  fi
+}
+
 cleanup() {
   exitCode=$?
 
@@ -44,6 +53,8 @@ cleanup() {
       fi
     fi
   fi
+
+  remove_install_script
 }
 
 stop_docker_containers() {
