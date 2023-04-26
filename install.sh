@@ -5,7 +5,6 @@ GIT_BRANCH=feature/install-script
 TMP_PATH=/tmp/lvinit_$(date +%s)
 HERE=$(pwd)
 
-
 dist_origin=''
 
 print_usage() {
@@ -47,6 +46,13 @@ retrieve_dist() {
     git pull origin $GIT_BRANCH
 
     cp -ra dist/. "$HERE"
+  else
+    if [ ! -d "$dist_origin" ]; then
+      echo "ERR: $dist_origin not found."
+      exit 1
+    fi
+    echo "=== Copy dist directory from: $dist_origin"
+    cp -ra "$dist_origin"/. "$HERE"
   fi
 }
 
@@ -109,7 +115,7 @@ install_symfony() {
 
 trap cleanup EXIT
 
-init_opts_variables
+init_opts_variables "$@"
 retrieve_dist
 install_dotenv
 start_docker
