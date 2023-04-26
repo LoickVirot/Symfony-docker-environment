@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 GIT_URL=https://github.com/LoickVirot/symfony-docker-environment.git
-GIT_BRANCH=feature/install-script
+GIT_BRANCH=master
 TMP_PATH=/tmp/lvinit_$(date +%s)
 HERE=$(pwd)
 
