@@ -4,6 +4,8 @@ GIT_URL=https://github.com/LoickVirot/symfony-docker-environment.git
 GIT_BRANCH=master
 TMP_PATH=/tmp/lvinit_$(date +%s)
 HERE=$(pwd)
+PROJECT_NAME=$(basename "$PWD")
+USER=$USER
 
 dist_origin=''
 
@@ -60,6 +62,22 @@ cleanup() {
 stop_docker_containers() {
   echo "Stop launched containers"
   docker-compose down
+}
+
+enable_composer_recipes() {
+  docker-compose exec -T symfony composer config extra.symfony.allow-contrib true
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+}
+
+disable_composer_recipes() {
+  docker-compose exec -T symfony composer config extra.symfony.allow-contrib false
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
 }
 
 retrieve_dist() {
@@ -139,6 +157,71 @@ install_symfony() {
   fi
 }
 
+install_codequality() {
+  cd "$HERE/www"
+
+  enable_composer_recipes
+
+  echo "=== Install CodeSniffer"
+  docker-compose exec -T symfony composer require --dev squizlabs/php_codesniffer
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+
+  echo "=== Install PHPStan"
+  docker-compose exec -T symfony composer require --dev phpstan/phpstan
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+
+  disable_composer_recipes
+}
+
+install_phpunit() {
+  cd "$HERE/www"
+
+  enable_composer_recipes
+
+  echo "=== Install PHPUnit"
+  docker-compose exec -T symfony composer require --dev phpunit/phpunit
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+
+  mv $HERE/phpunit.dist.xml $HERE/www/phpunit.dist.xml
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+
+  disable_composer_recipes
+}
+
+configure_composer_json() {
+  cd "$HERE/www"
+
+  docker-compose exec -T symfony composer config name "$USER/$PROJECT_NAME"
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+
+  docker-compose exec -T symfony composer config description ""
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+
+  docker-compose exec -T symfony composer update
+  if [[ $? != 0 ]]; then
+    stop_docker_containers
+    exit $?
+  fi
+}
+
 set_permission() {
   echo "=== Add permission to www directory"
   cd "$HERE"
@@ -161,6 +244,9 @@ install_dotenv
 start_docker
 check_symfony_dependencies
 install_symfony
+install_codequality
+install_phpunit
+configure_composer_json
 set_permission
 end_message
 

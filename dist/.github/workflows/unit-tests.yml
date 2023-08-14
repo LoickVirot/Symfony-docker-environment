@@ -1,0 +1,29 @@
+name: Unit tests
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    uses: ./.github/workflows/php-quality.yml
+
+  unit-tests:
+    name: Unit tests
+    needs: [quality]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        cd www
+        composer install --prefer-dist --no-progress
+
+    - name: Run unit tests
+      run: |
+        cd www
+        vendor/bin/phpunit

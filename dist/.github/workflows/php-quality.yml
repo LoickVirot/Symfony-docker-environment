@@ -1,0 +1,67 @@
+name: PHP Quality
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  composer-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Validate composer.json and composer.lock
+      run: |
+        cd www
+        composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: www/vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: |
+        cd www
+        composer install --prefer-dist --no-progress
+
+  php-codesniffer:
+    name: PHP Codesniffer
+    needs: [composer-validation]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          cd www
+          composer install --prefer-dist --no-progress
+
+      - name: Run codesniffer
+        run: |
+          cd www
+          vendor/bin/phpcs src
+
+  php-stan:
+    name: PHP Stan
+    needs: [composer-validation]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        cd www
+        composer install --prefer-dist --no-progress
+
+    - name: PHP Stan
+      run: cd www && vendor/bin/phpstan analyse src
