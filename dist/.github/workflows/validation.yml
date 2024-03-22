@@ -1,0 +1,31 @@
+name: Validation
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  composer:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Validate composer.json and composer.lock
+      run: |
+        cd www
+        composer validate --strict
+
+    - uses: php-actions/composer@v6
+      with:
+        container_workdir: /app/www
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: www/vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-

@@ -1,0 +1,29 @@
+name: CI/CD
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  validation:
+    uses: ./.github/workflows/validation.yml
+
+  quality:
+    needs:
+      - validation
+    uses: ./.github/workflows/php-quality.yml
+
+  unit-tests:
+    needs:
+      - validation
+    uses: ./.github/workflows/unit-tests.yml
+
+  build:
+    needs:
+      - validation
+      - quality
+      - unit-tests
+    uses: ./.github/workflows/build.yml
+    secrets: inherit

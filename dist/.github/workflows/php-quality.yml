@@ -7,61 +7,43 @@ permissions:
   contents: read
 
 jobs:
-  composer-validation:
+  phpcs:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP Code Sniffer
+        uses: php-actions/phpcs@v1
+        with:
+          php_version: 8.3
+          standard: www/phpcs.xml
+          args: -d memory_limit=2048M
+
+  phpstan:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./www
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Validate composer.json and composer.lock
-      run: |
-        cd www
-        composer validate --strict
+      - uses: php-actions/composer@v6
+        with:
+          container_workdir: /app/www
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: www/vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: PHP Stan
+        run: vendor/bin/phpstan analyse -c phpstan.neon
 
-    - name: Install dependencies
-      run: |
-        cd www
-        composer install --prefer-dist --no-progress
-
-  php-codesniffer:
-    name: PHP Codesniffer
-    needs: [composer-validation]
-    runs-on: ubuntu-latest
+  lint-twig:
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./www
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: |
-          cd www
-          composer install --prefer-dist --no-progress
-
-      - name: Run codesniffer
-        run: |
-          cd www
-          vendor/bin/phpcs src
-
-  php-stan:
-    name: PHP Stan
-    needs: [composer-validation]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install dependencies
-      run: |
-        cd www
-        composer install --prefer-dist --no-progress
-
-    - name: PHP Stan
-      run: cd www && vendor/bin/phpstan analyse src
+      - uses: actions/checkout@v4
+      - uses: php-actions/composer@v6
+        with:
+          container_workdir: /app/www
+      - run: php bin/console lint:twig templates

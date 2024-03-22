@@ -1,29 +1,25 @@
 name: Unit tests
 
 on:
-  push:
+  workflow_call:
 
 permissions:
   contents: read
 
 jobs:
-  quality:
-    uses: ./.github/workflows/php-quality.yml
-
   unit-tests:
     name: Unit tests
-    needs: [quality]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./www
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        cd www
-        composer install --prefer-dist --no-progress
+    - uses: php-actions/composer@v6
+      with:
+        container_workdir: /app/www
 
     - name: Run unit tests
-      run: |
-        cd www
-        vendor/bin/phpunit
+      run: vendor/bin/phpunit
