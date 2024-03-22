@@ -1,4 +1,7 @@
 {
+  "name": "loickvirot/symfony-docker-environment",
+  "description": "Symfony template that runs Symfony",
+  "version": "1.0.0",
   "type": "project",
   "license": "proprietary",
   "minimum-stability": "stable",
@@ -67,7 +70,5 @@
       "allow-contrib": "false",
       "require": "7.0.*"
     }
-  },
-  "name": "loickvirot/symfony-docker-environment",
-  "description": "Symfony template that runs Symfony"
+  }
 }
