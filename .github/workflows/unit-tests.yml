@@ -15,11 +15,9 @@ jobs:
         working-directory: ./www
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: php-actions/composer@v6
-      with:
-        container_workdir: /app/www
+      - uses: php-actions/composer@v6
 
-    - name: Run unit tests
-      run: vendor/bin/phpunit
+      - name: Run unit tests
+        run: vendor/bin/phpunit
