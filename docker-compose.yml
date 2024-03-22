@@ -1,7 +1,7 @@
 # docker-compose.yml
 services:
   db:
-    image: mysql
+    image: mysql:8.3
     volumes:
       - database:/var/lib/mysql
     environment:
@@ -19,6 +19,12 @@ services:
 
   composer:
     image: composer:2.7
+    volumes:
+      - ./www:/var/www
+    working_dir: /var/www
+
+  node:
+    image: node:21
     volumes:
       - ./www:/var/www
     working_dir: /var/www
