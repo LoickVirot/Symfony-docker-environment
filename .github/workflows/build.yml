@@ -10,7 +10,7 @@ env:
   REGISTRY_URL: ghcr.io
   REGISTRY_USERNAME: ${{ github.actor }}
   REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  IMAGE: ${{ secrets.REGISTRY_URL }}/${{ github.event.repository.name }}
+  IMAGE: ${{ github.repository }}
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag ${{ env.IMAGE }}:latest
+        run: docker build . --file Dockerfile --tag ${{ env.REGISTRY_URL }}/${{ env.IMAGE }}:latest
 
       - name: Push to registry
-        run: docker push ${{ env.IMAGE }}:latest
+        run: docker push ${{ env.REGISTRY_URL }}/${{ env.IMAGE }}:latest
