@@ -16,15 +16,11 @@ jobs:
         uses: php-actions/phpcs@v1
         with:
           php_version: 8.3
-          standard: www/phpcs.xml
+          standard: phpcs.xml
           args: -d memory_limit=2048M
 
   phpstan:
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: ./www
-
     steps:
       - uses: actions/checkout@v4
       - uses: php-actions/composer@v6
@@ -34,10 +30,6 @@ jobs:
 
   lint-twig:
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: ./www
-
     steps:
       - uses: actions/checkout@v4
       - uses: php-actions/composer@v6
