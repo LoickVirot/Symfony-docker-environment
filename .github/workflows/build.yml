@@ -26,9 +26,11 @@ jobs:
         uses: php-actions/composer@v6
 
       - name: Install node dependencies
+        if: ${{ hashFiles('**/package-lock.json') != ''}}
         run: npm ci
 
       - name: Build assets
+        if: ${{ hashFiles('**/package-lock.json') != ''}}
         run: npm run build
 
       - name: Login to GitHub Container Registry
