@@ -65,7 +65,7 @@ stop_docker_containers() {
 }
 
 enable_composer_recipes() {
-  docker-compose exec -T symfony composer config extra.symfony.allow-contrib true
+  docker-compose run --rm composer config extra.symfony.allow-contrib true
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -73,7 +73,7 @@ enable_composer_recipes() {
 }
 
 disable_composer_recipes() {
-  docker-compose exec -T symfony composer config extra.symfony.allow-contrib false
+  docker-compose run --rm composer config extra.symfony.allow-contrib false
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -100,18 +100,6 @@ retrieve_dist() {
   fi
 }
 
-install_dotenv() {
-  cd "$HERE"
-  ENV_FILE=.env
-
-  if [ ! -f "$ENV_FILE" ]; then
-    echo "=== Create .env file"
-    mv .env.example .env
-  else
-    echo "=== .env file already exists, skipping."
-  fi
-}
-
 start_docker() {
   cd "$HERE"
 
@@ -132,17 +120,6 @@ start_docker() {
   fi
 }
 
-check_symfony_dependencies() {
-  cd "$HERE"
-
-  echo "=== Check Symfony dependencies"
-  docker-compose exec -T symfony symfony check:requirements
-  if [[ $? != 0 ]]; then
-    stop_docker_containers
-    exit $?
-  fi
-}
-
 install_symfony() {
   cd "$HERE"
 
@@ -150,7 +127,7 @@ install_symfony() {
   rm www/.gitkeep
 
   echo "=== Create new Symfony project"
-  docker-compose exec -T symfony composer create-project symfony/skeleton .
+  docker-compose run --rm composer create-project symfony/skeleton .
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -163,14 +140,14 @@ install_codequality() {
   enable_composer_recipes
 
   echo "=== Install CodeSniffer"
-  docker-compose exec -T symfony composer require --dev squizlabs/php_codesniffer
+  docker-compose run --rm composer require --dev squizlabs/php_codesniffer
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
   fi
 
   echo "=== Install PHPStan"
-  docker-compose exec -T symfony composer require --dev phpstan/phpstan
+  docker-compose run --rm composer require --dev phpstan/phpstan
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -185,7 +162,7 @@ install_phpunit() {
   enable_composer_recipes
 
   echo "=== Install PHPUnit"
-  docker-compose exec -T symfony composer require --dev phpunit/phpunit
+  docker-compose run --rm composer require --dev phpunit/phpunit
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -203,19 +180,19 @@ install_phpunit() {
 configure_composer_json() {
   cd "$HERE/www"
 
-  docker-compose exec -T symfony composer config name "$USER/$PROJECT_NAME"
+  docker-compose run --rm composer config name "$USER/$PROJECT_NAME"
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
   fi
 
-  docker-compose exec -T symfony composer config description ""
+  docker-compose run --rm composer config description ""
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
   fi
 
-  docker-compose exec -T symfony composer update
+  docker-compose run --rm composer update
   if [[ $? != 0 ]]; then
     stop_docker_containers
     exit $?
@@ -240,9 +217,7 @@ trap cleanup EXIT
 
 init_opts_variables "$@"
 retrieve_dist
-install_dotenv
 start_docker
-check_symfony_dependencies
 install_symfony
 install_codequality
 install_phpunit
