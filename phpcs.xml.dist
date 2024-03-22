@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
+<ruleset name="Elve.dev">
+    <description>Elve.dev Coding Standards</description>
 
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <!-- Scan all files in directory -->
+    <file>src</file>
 
-    <arg name="basepath" value="."/>
-    <arg name="cache" value=".phpcs-cache"/>
-    <arg name="colors"/>
+    <!-- Scan only PHP files -->
     <arg name="extensions" value="php"/>
 
+    <!-- Show colors in console -->
+    <arg value="-colors"/>
+
+    <!-- Show sniff codes in all reports -->
+    <arg value="ns"/>
+
+    <!-- Use PSR-2 as a base -->
     <rule ref="PSR12"/>
-
-    <file>bin/</file>
-    <file>config/</file>
-    <file>public/</file>
-    <file>src/</file>
-    <file>tests/</file>
-
 </ruleset>
