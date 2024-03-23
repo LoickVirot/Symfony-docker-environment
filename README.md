@@ -4,6 +4,7 @@ Template to host Symfony applications on docker with PHP and MySQL
 
 This template uses :
 
+- Symfony 7
 - PHP version: 8.3
 - Nginx version: latest version in alpine packages
 - MySQL version: 8.3
@@ -15,8 +16,7 @@ This template comes with some tools :
 - PHPCS
 - PHPStan
 - PHPUnit
-- Github Workflow to run these tools for each push
-
+- Preconfigured github actions to test, build and deploy (coming soon!)
 ## Requirements
 
 To use this template, you need to have these programs installed :
