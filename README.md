@@ -1,47 +1,42 @@
 # Symfony docker-compose template
+
 Template to host Symfony applications on docker with PHP and MySQL
-- Last Symfony version tested: 6.3
 
-This template uses : 
-- Last PHP version
-- Last nginx version
-- Last MySQL version
+This template uses :
 
-This template comes with : 
-- ✨ PHPCS
-- 🛑 PHPStan
-- ✅ PHPUnit
-- 🚀 Github Workflow to run these tools for each push
+- PHP version: 8.3
+- Nginx version: latest version in alpine packages
+- MySQL version: 8.3
+- Composer: 2.7
+- Node: 21 (useful for webpack-encore, remove it if you don't need it.)
+
+This template comes with some tools :
+
+- PHPCS
+- PHPStan
+- PHPUnit
+- Github Workflow to run these tools for each push
 
 ## Requirements
+
 To use this template, you need to have these programs installed :
+
 - Docker
 - Docker Compose
 
+## Run composer
 
-## Installation
-First of all, create folder for your project and go inside it :
+You can use this command to run composer:
+
 ```bash
-mkdir myproject
-cd myproject
-```
-Now, run this command to download the install script and launch it :
-```bash
- wget https://raw.githubusercontent.com/LoickVirot/symfony-docker-environment/feature/install-script/install.sh && bash install.sh
+docker-compose run --rm composer --version
 ```
 
-## Development
-If you want to create some changes in the dist, or the install script, just clone this repository.
-You can launch the install script wit h `-l` option to define a dist directory to copy. It's useful when you want to try the install script with your local `dist` folder
+## Run nodeJS
 
-For example, in this repository, you can test changes in dist repository with this command:
-```bash
-mkdir test
-cd test
-../install.sh -l ../dist
-```
+You can use this command to run node:
 
-To reset test folder and redo install script, use `dev_uninstall.sh` from `test` folder :
 ```bash
-../dev_uninstall.sh
+docker-compose run --rm node node --version
+docker-compose run --rm node npm --version
 ```

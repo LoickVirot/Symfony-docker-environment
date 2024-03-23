@@ -1,0 +1,29 @@
+name: PHP Quality
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  phpcs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP Code Sniffer
+        uses: php-actions/phpcs@v1
+        with:
+          php_version: 8.3
+          standard: phpcs.xml.dist
+          args: -d memory_limit=2048M
+
+  phpstan:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: php-actions/composer@v6
+
+      - name: PHP Stan
+        run: vendor/bin/phpstan analyse -c phpstan.dist.neon
