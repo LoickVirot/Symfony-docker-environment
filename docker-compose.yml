@@ -15,7 +15,7 @@ services:
       - .:/www
     working_dir: /www
     ports:
-      - "8000:80"
+      - "3000:80"
 
   composer:
     image: composer:2.7
@@ -24,7 +24,7 @@ services:
     working_dir: /www
 
   node:
-    image: node:21
+    image: node:22
     volumes:
       - .:/www
     working_dir: /www
